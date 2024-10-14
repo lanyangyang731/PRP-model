@@ -4,7 +4,9 @@ import torch.nn.functional as F
 from geomloss import SamplesLoss
 
 from ...basic.layers import MLP, EmbeddingLayer
-
+"""
+To prevent premature disclosure of the code, we have hidden a portion of it. However, if the paper is accepted, we will make the complete code publicly available.
+"""
 
 class PRP(nn.Module):
     def __init__(self, features, domain_num, task_num, expert_num, expert_params, tower_params, args):
@@ -125,7 +127,7 @@ class PRP(nn.Module):
             for d in range(self.domain_num):
                 domain_mask = mask[d].unsqueeze(1)
                 expert_pooling_s_ot = torch.where(domain_mask, expert_pooling_s_ots[d], expert_pooling_s_ot)
-            s_prp_emb = torch.cat([expert_pooling_c_ot, expert_pooling_s_ot], dim=-1)  # [batch_size, expert_dims[-1] * 2]
+            
         else:
             s_prp_emb = torch.cat([expert_pooling_c, expert_pooling_s], dim=-1)  # [batch_size, expert_dims[-1] * 2]
 
