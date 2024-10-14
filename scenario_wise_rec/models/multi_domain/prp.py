@@ -69,7 +69,7 @@ class PRP(nn.Module):
     def optimal_transport(self, instance, prototype, alpha):
         instance = instance.to(self.device)  # [B, D]
         prototype = prototype.to(self.device)  # [K, D]
-        output = torch.mm(alpha(instance), prototype)  # [B, K] @ [K, D] => [B, D]
+        
         loss_func = SamplesLoss(loss='sinkhorn', p=2, blur=.05)
         loss = loss_func(instance, prototype)
         return output, loss
@@ -115,8 +115,9 @@ class PRP(nn.Module):
             expert_pooling_c_ot, loss_c = self.optimal_transport(expert_pooling_c, self.domain_prototypes[0].prototype, self.domain_alphas[0])  # [batch_size, expert_dims[-1]]
             expert_pooling_s_ots, loss_s = [], 0
             for d in range(1, self.domain_num + 1):
-                tmp1, tmp2 = self.optimal_transport(expert_pooling_s, self.domain_prototypes[d].prototype, self.domain_alphas[d])  # expert_pooling_c_ots[i]: [batch_size, expert_dims[-1]]
-                expert_pooling_s_ots.append(tmp1)
+
+                
+                
                 loss_s += tmp2
             self.loss_dict['loss_c'] = loss_c
             self.loss_dict['loss_s'] = loss_s
@@ -142,9 +143,9 @@ class PRP(nn.Module):
 
         # ========== t-prp: combine commonality with specificity ==========
         if self.use_ot:
-            expert_pooling_c_2_ot, loss_c_2 = self.optimal_transport(expert_pooling_c_2, self.task_prototypes[0].prototype, self.task_alphas[0])  # [batch_size, expert_dims[-1]]
-            expert_pooling_s_2_ot_1, loss_s_2_1 = self.optimal_transport(expert_pooling_s_2, self.task_prototypes[1].prototype, self.task_alphas[1])  # [batch_size, expert_dims[-1]]
-            expert_pooling_s_2_ot_2, loss_s_2_2 = self.optimal_transport(expert_pooling_s_2, self.task_prototypes[2].prototype, self.task_alphas[2])  # [batch_size, expert_dims[-1]]
+
+
+            
             self.loss_dict['loss_c_2'] = loss_c_2
             self.loss_dict['loss_s_2'] = loss_s_2_1 + loss_s_2_2
             t_prp_emb1 = torch.cat([expert_pooling_c_2_ot, expert_pooling_s_2_ot_1], dim=-1)  # [batch_size, expert_dims[-1] * 2]
